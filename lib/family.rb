@@ -1,11 +1,9 @@
-$VERBOSE = true
-
-require 'forwardable'
-require 'validation'
-
 # Family is a Container class
 # For provide "Homogeneous Array" in Ruby
 # And it doesn't depend just the "Type" :)
+
+require 'forwardable'
+require 'validation'
 
 # @example Old Style
 # list = Family.new Integer
@@ -18,10 +16,14 @@ require 'validation'
 # list << 'a b c' #=> Exception
 # list << 'abc' #=> 'abc'
 # list.inspect #=> /\A\S+\z/['abc']
-# @example with Validation libraly
-# require 'validation'
-# include validation
-# list = Family.new AND(Symbol, /\A\S+\z/)
+# @example HighLayer definition
+# list = Family.new{AND(Symbol, /\A\S+\z/)}
+# @note return self -> Array
+#   * #flatten is different
+#   * #flatten! is none
+#   * #product
+# @note removed from Array
+#   * #flatten! is none
 class Family
 
   extend Forwardable
@@ -31,10 +33,15 @@ class Family
   class InvalidValue < TypeError; end
   class MismatchedObject < TypeError; end
   
+  class DSL
+    include Validation
+    include Validation::Condition
+  end
+  
   class << self
     
-    def multiple
-      
+    def define(values=[], &block)
+      new DSL.new.instance_exec(&block), :===, values
     end
     
     private
@@ -58,7 +65,7 @@ class Family
 
       define_method operator do |other|
         other = other.kind_of?(::Family) ? other._values : other.to_ary
-        raise MismatchedObject unless other.all?{|v|family? v}
+        raise MismatchedObject unless similar? other
         
         new @proof, @comparison, @values.__send__(operator, other)
       end
@@ -70,13 +77,25 @@ class Family
   attr_reader :proof, :comparison
   
   def initialize(proof, comparison=:===, values=[])
-    @values, @comparison, @proof = values.to_ary, comparison, proof
+    @proof, @comparison, @values = proof, comparison, values.to_ary
 
     raise MismatchedObject unless valid?
   end
   
-  def_enums :each, :combination
+  def_delegators :@values, :join, :<=>, :==, :[], :at, :assoc,
+    :rassoc, :delete, :delete_at, :empty?, :fetch, :first, :last, :take, :tail,
+    :flatten, :include?, :index, :to_s, :length, :size, :pack,
+    :pop, :product, :reverse_each, :rindex, :sample,
+    :slice, :slice!, :transpose, :zip
+
+  def_enums :each, :each_index, :cycle, :combination, :repeated_combination,
+    :permutation, :repeated_permutation
   
+  def_set_operator :&
+  def_set_operator :+
+  def_set_operator :- # todo
+  def_set_operator :|
+
   def values
     @values.dup
   end
@@ -84,28 +103,43 @@ class Family
   alias_method :to_ary, :values
   alias_method :to_a, :values
   
+  def inspect
+    "<#{@proof.inspect}>#{@values.inspect}"
+  end
+  
   def <<(value)
     raise MismatchedObject unless family? value
 
     @values << value
     self
   end
-  
+
   alias_method :push, :<<
   
-  #~ def each(&block)
-    #~ return to_enum(__callee__) unless block_given?
+  def unshift(value)
+    raise MismatchedObject unless family? value
 
-    #~ @values.each(&block)
-    #~ self
-  #~ end
+    @values.unshift value
+    self
+  end
+  
+  def concat(list)
+    raise MismatchedObject unless similar? list
+
+    @values.concat other
+    self
+  end
   
   def family?(value)
     @proof.__send__ @comparison, value
   end
-  
+
+  def similar?(list)
+    list.all?{|v|family? v}
+  end
+
   def valid?
-    @values.all?{|v|family? v}
+    similar? @values
   end
   
   def map(&block)
@@ -117,25 +151,14 @@ class Family
   def map!(&block)
     return to_enum(__callee__) unless block_given?
     
-    mapped_values = @values.map(&block)
-    raise InvalidOperation unless mapped_values.all?{|v|family? v}
+    mapped = @values.map(&block)
+    raise InvalidOperation unless similar? mapped
     
-    @values = mapped_values
+    @values = mapped
     self
   end
   
   alias_method :collect!, :map!
-  
-  #~ def &(other)
-    #~ other = other.kind_of?(::Family) ? other._values : other.to_ary
-    #~ raise MismatchedObject unless other.all?{|v|family? v}
-    
-    #~ new @proof, @comparison, @values & other
-  #~ end
-  
-  def_set_operator :&
-  def_set_operator :+
-  def_set_operator :- # todo
   
   def *(times_or_delimiter)
     case times_or_delimiter
@@ -158,8 +181,13 @@ class Family
     self
   end
   
-  def_delegators :@values, :join, :<=>, :==, :[], :at, :assoc, :rassoc
-  
+  def method_missing(name, *args, &block)
+    return super unless @values.respond_to? name
+    
+    warn "WARN:#{__FILE__}:#{__LINE__}:unexpected method, not cheked any proofs"
+    @values.__send__ name, *args, &block
+  end
+
   def clear
     @values.clear
     self
@@ -173,10 +201,119 @@ class Family
     @values.compact! && self
   end
   
+  def hash
+    _comparison_values.hash
+  end
+  
+  def eql?(other)
+    other.kind_of?(::Family) &&
+      (_comparison_values == other._comparison_values)
+  end
+  
+  def reject!(&block)
+    return to_enum(__callee__) unless block_given?
+    
+    @values.reject!(&block) && self
+  end
+  
+  def delete_if(&block)
+    return to_enum(__callee__) unless block_given?
+    
+    reject!(&block)
+    self
+  end
+  
+  def select!(&block)
+    return to_enum(__callee__) unless block_given?
+    
+    @values.select!(&block) && self
+  end
+  
+  def keep_if(&block)
+    return to_enum(__callee__) unless block_given?
+    
+    select!(&block)
+    self
+  end
+  
+  def fill(*args, &block)
+    filled = @values.dup.fill(*args, &block)
+    raise MismatchedObject unless similar? filled
+    
+    @values = filled
+    self
+  end
+  
+  def replace(list)
+    raise MismatchedObject unless similar? list
+    
+    @values = list.dup
+    self
+  end
+  
+  def reverse
+    new @proof, @comparison, @values.reverse
+  end
+  
+  def reverse!
+    @values.reverse!
+    self
+  end
+  
+  def rotate(pos=1)
+    new @proof, @comparison, @values.rotate(pos)
+  end
+  
+  def rotate!(pos=1)
+    @values.rotate! pos
+    self
+  end
+  
+  def shuffle(options={})
+    new @proof, @comparison, @values.shuffle(options)
+  end
+  
+  def shuffle!(options={})
+    @values.shuffle! options
+    self
+  end
+  
+  def sort(&block)
+    new @proof, @comparison, @values.sort(&block)
+  end
+  
+  def sort!(&block)
+    @values.sort!(&block) && self
+  end
+  
+  def sort_by(&block)
+    new @proof, @comparison, @values.sort_by(&block)
+  end
+  
+  def sort_by!(&block)
+    @values.sort_by!(&block) && self
+  end
+  
+  def uniq(&block)
+    new @proof, @comparison, @values.uniq(&block)
+  end
+  
+  def uniq!(&block)
+    @values.uniq!(&block) && self
+  end
+  
+  def values_at(*selectors)
+    new @proof, @comparison, @values.values_at(*selectors)
+  end
+  
   protected
   
   def _values
     @values
+  end
+  
+  def _comparison_values
+    [@proof, @comparison, @values]
   end
   
   private
