@@ -67,7 +67,7 @@ class Family
         other = other.kind_of?(::Family) ? other._values : other.to_ary
         raise MismatchedObject unless similar? other
         
-        new @proof, @comparison, @values.__send__(operator, other)
+        self.class.new @proof, @comparison, @values.__send__(operator, other)
       end
   
     end
