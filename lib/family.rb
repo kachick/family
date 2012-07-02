@@ -1,3 +1,5 @@
+# Copyright (C) 2012 Kenichi Kamiya
+
 # Family is a Container class
 # For provide "Homogeneous Array" in Ruby
 # And it doesn't depend just the "Type" :)
@@ -30,6 +32,8 @@ class Family
   include Enumerable
   include Validation
 
+  VERSION = '0.0.1'
+
   class InvalidValue < TypeError; end
   class MismatchedObject < TypeError; end
   
@@ -46,19 +50,17 @@ class Family
     
     private
     
-    def def_enum(name)
+    def def_enum(reciever, name)
     
       define_method name do |*args, &block|
-        return to_enum(__callee__) unless block_given?
-        
-        @values.__send__ name, *args, &block
+        eval("#{reciever}").__send__ name, *args, &block
         self
       end
 
     end
     
-    def def_enums(*names)
-      names.each {|name|def_enum name}
+    def def_enums(reciever, *names)
+      names.each {|name|def_enum reciever, name}
     end
     
     def def_set_operator(operator)
@@ -88,14 +90,15 @@ class Family
     :pop, :product, :reverse_each, :rindex, :sample,
     :slice, :slice!, :transpose, :zip
 
-  def_enums :each, :each_index, :cycle, :combination, :repeated_combination,
-    :permutation, :repeated_permutation
+  def_enums :@values, :each, :each_index, :cycle, :combination,
+    :repeated_combination, :permutation, :repeated_permutation
   
   def_set_operator :&
   def_set_operator :+
   def_set_operator :- # todo
   def_set_operator :|
 
+  # @return [Array]
   def values
     @values.dup
   end
@@ -103,10 +106,12 @@ class Family
   alias_method :to_ary, :values
   alias_method :to_a, :values
   
+  # @return [String]
   def inspect
     "<#{@proof.inspect}>#{@values.inspect}"
   end
   
+  # @return [self]
   def <<(value)
     raise MismatchedObject unless family? value
 
@@ -116,6 +121,7 @@ class Family
 
   alias_method :push, :<<
   
+  # @return [self]
   def unshift(value)
     raise MismatchedObject unless family? value
 
@@ -123,6 +129,7 @@ class Family
     self
   end
   
+  # @return [self]
   def concat(list)
     raise MismatchedObject unless similar? list
 
@@ -142,12 +149,14 @@ class Family
     similar? @values
   end
   
+  # @return [Family]
   def map(&block)
-    new @proof, @comparison, @values.map(&block)
+    self.class.new @proof, @comparison, @values.map(&block)
   end
   
   alias_method :collect, :map
   
+  # @return [self]
   def map!(&block)
     return to_enum(__callee__) unless block_given?
     
@@ -160,10 +169,11 @@ class Family
   
   alias_method :collect!, :map!
   
+  # @return [Family]
   def *(times_or_delimiter)
     case times_or_delimiter
     when Integer
-      new @proof, @comparison, @values * times_or_delimiter
+      self.class.new @proof, @comparison, @values * times_or_delimiter
     when String
       join times_or_delimiter
     else
@@ -171,14 +181,15 @@ class Family
     end
   end
   
+  # @return [self]
   def to_family
     self
   end
   
+  # @return [self]
   def freeze
-    super
     @values.freeze
-    self
+    super
   end
   
   def method_missing(name, *args, &block)
@@ -188,19 +199,23 @@ class Family
     @values.__send__ name, *args, &block
   end
 
+  # @return [self]
   def clear
     @values.clear
     self
   end
   
+  # @return [self]
   def compact
     @values.compact
   end
   
+  # @return [self, nil]
   def compact!
     @values.compact! && self
   end
   
+  # @return [Number]
   def hash
     _comparison_values.hash
   end
@@ -210,12 +225,14 @@ class Family
       (_comparison_values == other._comparison_values)
   end
   
+  # @return [self, nil]
   def reject!(&block)
     return to_enum(__callee__) unless block_given?
     
     @values.reject!(&block) && self
   end
   
+  # @return [self]
   def delete_if(&block)
     return to_enum(__callee__) unless block_given?
     
@@ -223,6 +240,7 @@ class Family
     self
   end
   
+  # @return [self, nil]
   def select!(&block)
     return to_enum(__callee__) unless block_given?
     
@@ -236,6 +254,7 @@ class Family
     self
   end
   
+  # @return [self]
   def fill(*args, &block)
     filled = @values.dup.fill(*args, &block)
     raise MismatchedObject unless similar? filled
@@ -244,6 +263,7 @@ class Family
     self
   end
   
+  # @return [self]
   def replace(list)
     raise MismatchedObject unless similar? list
     
@@ -251,59 +271,72 @@ class Family
     self
   end
   
+  # @return [Family]
   def reverse
-    new @proof, @comparison, @values.reverse
+    self.class.new @proof, @comparison, @values.reverse
   end
   
+  # @return [self]
   def reverse!
     @values.reverse!
     self
   end
   
+  # @return [Family]
   def rotate(pos=1)
-    new @proof, @comparison, @values.rotate(pos)
+    self.class.new @proof, @comparison, @values.rotate(pos)
   end
   
+  # @return [self]
   def rotate!(pos=1)
     @values.rotate! pos
     self
   end
   
+  # @return [Family]
   def shuffle(options={})
-    new @proof, @comparison, @values.shuffle(options)
+    self.class.new @proof, @comparison, @values.shuffle(options)
   end
   
+  # @return [self]
   def shuffle!(options={})
     @values.shuffle! options
     self
   end
   
+  # @return [Family]
   def sort(&block)
-    new @proof, @comparison, @values.sort(&block)
+    self.class.new @proof, @comparison, @values.sort(&block)
   end
   
+  # @return [self, nil]
   def sort!(&block)
     @values.sort!(&block) && self
   end
-  
+
+  # @return [Family]
   def sort_by(&block)
-    new @proof, @comparison, @values.sort_by(&block)
+    self.class.new @proof, @comparison, @values.sort_by(&block)
   end
   
+  # @return [self, nil]
   def sort_by!(&block)
     @values.sort_by!(&block) && self
   end
   
+  # @return [Family]
   def uniq(&block)
-    new @proof, @comparison, @values.uniq(&block)
+    self.class.new @proof, @comparison, @values.uniq(&block)
   end
   
+  # @return [self, nil]
   def uniq!(&block)
     @values.uniq!(&block) && self
   end
   
+  # @return [Family]
   def values_at(*selectors)
-    new @proof, @comparison, @values.values_at(*selectors)
+    self.class.new @proof, @comparison, @values.values_at(*selectors)
   end
   
   protected
@@ -323,4 +356,3 @@ class Family
   end
   
 end
-
