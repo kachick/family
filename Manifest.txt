@@ -1,0 +1,8 @@
+README.rdoc
+LICENSE
+History.rdoc
+Manifest.txt
+Rakefile
+lib/family.rb
+dspec/basic.rb
+examples/example.rb
