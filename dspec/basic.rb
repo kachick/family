@@ -7,6 +7,10 @@ Declare do
 
   The Family.new(Integer) do |list|
     is []
+    truthy list.family?(2)
+    falthy list.family?('2')
+    truthy list.similar?([2, 9])
+    falthy list.similar?([2, nil])
 
     The (list << 7) do
       EQUAL list
