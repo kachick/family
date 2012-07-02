@@ -32,7 +32,7 @@ class Family
   include Enumerable
   include Validation
 
-  VERSION = '0.0.1'
+  VERSION = '0.0.1.1'
 
   class InvalidValue < TypeError; end
   class MismatchedObject < TypeError; end
