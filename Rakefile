@@ -9,7 +9,7 @@ $hoe = Hoe.spec 'family' do
   self.rubyforge_name       = name
   require_ruby_version '>= 1.9.2'
   dependency 'validation', '~> 0.0.3', :runtime
-  dependency 'yard', '~> 0.8.2', :development
+  dependency 'yard', '~> 0.8.2.1', :development
   dependency 'declare', '~> 0.0.4', :development
 end
 
