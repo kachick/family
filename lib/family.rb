@@ -129,6 +129,7 @@ class Family
     self
   end
   
+  # @param [#all?] list
   # @return [self]
   def concat(list)
     raise MismatchedObject unless similar? list
@@ -141,6 +142,7 @@ class Family
     @proof.__send__ @comparison, value
   end
 
+  # @param [#all?] list
   def similar?(list)
     list.all?{|v|family? v}
   end
@@ -192,6 +194,7 @@ class Family
     super
   end
   
+  # @param [Symbol] name
   def method_missing(name, *args, &block)
     return super unless @values.respond_to? name
     
@@ -263,6 +266,7 @@ class Family
     self
   end
   
+  # @param [#all?] list
   # @return [self]
   def replace(list)
     raise MismatchedObject unless similar? list
@@ -282,11 +286,13 @@ class Family
     self
   end
   
+  # @param [Integer] pos
   # @return [Family]
   def rotate(pos=1)
     self.class.new @proof, @comparison, @values.rotate(pos)
   end
   
+  # @param [Integer] pos
   # @return [self]
   def rotate!(pos=1)
     @values.rotate! pos
@@ -334,6 +340,7 @@ class Family
     @values.uniq!(&block) && self
   end
   
+  # @param [Integer, Range<Integer>] selectors
   # @return [Family]
   def values_at(*selectors)
     self.class.new @proof, @comparison, @values.values_at(*selectors)
