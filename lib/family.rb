@@ -133,7 +133,7 @@ class Family
   def concat(list)
     raise MismatchedObject unless similar? list
 
-    @values.concat other
+    @values.concat list
     self
   end
   
