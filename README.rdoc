@@ -2,7 +2,6 @@
 
 code :: https://github.com/kachick/family
 bugs :: https://github.com/kachick/family/issues
-gem  :: https://rubygems.org/gems/family
 
 == Description
 
