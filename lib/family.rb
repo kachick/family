@@ -8,18 +8,18 @@ require 'forwardable'
 require 'validation'
 
 # @example Old Style
-# list = Family.new Integer
-# list << 7 #=> 7
-# list << 1.0 #=> Exception
-# list << 1 #=> 1
-# list.inspect #=> Integer[7, 1]
+#   list = Family.new Integer
+#   list << 7 #=> 7
+#   list << 1.0 #=> Exception
+#   list << 1 #=> 1
+#   list.inspect #=> Integer[7, 1]
 # @example Not only "Type"
-# list = Family.new /\A\S+\z/
-# list << 'a b c' #=> Exception
-# list << 'abc' #=> 'abc'
-# list.inspect #=> /\A\S+\z/['abc']
+#   list = Family.new /\A\S+\z/
+#   list << 'a b c' #=> Exception
+#   list << 'abc' #=> 'abc'
+#   list.inspect #=> /\A\S+\z/['abc']
 # @example HighLayer definition
-# list = Family.new{AND(Symbol, /\A\S+\z/)}
+#   list = Family.new{AND(Symbol, /\A\S+\z/)}
 # @note return self -> Array
 #   * #flatten is different
 #   * #flatten! is none
