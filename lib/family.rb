@@ -34,7 +34,6 @@ class Family
 
   VERSION = '0.0.1.1'
 
-  class InvalidValue < TypeError; end
   class MismatchedObject < TypeError; end
   
   class DSL
