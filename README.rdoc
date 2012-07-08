@@ -5,7 +5,7 @@ bugs :: https://github.com/kachick/family/issues
 
 == Description
 
-Provide "Homogeneous Array" in Ruby
+Homogeneous Array
 
 == Futures
 
@@ -22,13 +22,14 @@ Provide "Homogeneous Array" in Ruby
     list << 7      #=> 7
     list << 1.0    #=> Exception
     list << 1      #=> 1
+    list.inspect #=> "Family<Integer>:[7, 1]
 
 === Not only "Type"
 
     list = Family.new /\A\S+\z/
     list << 'a b c' #=> Exception
-    list << 'abc'   #=> 'abc'
-    list.inspect    #=> /\A\S+\z/['abc']    
+    list << 'abc'   #=> "abc"
+    list.inspect    #=> "Family</\A\S+\z/>:["abc"]"    
 
 === HighLayer Definition
 
@@ -38,12 +39,6 @@ Provide "Homogeneous Array" in Ruby
 == Requirements
 
 * Ruby 1.9.2 or later
-  
-  Focusing
-  
-  * 1.9.3-p194
-  * 1.9.2-p290
-
 * validation - 0.0.3
 
 == Installation
