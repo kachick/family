@@ -107,7 +107,7 @@ class Family
   
   # @return [String]
   def inspect
-    "<#{@proof.inspect}>#{@values.inspect}"
+    "#{self.class}<#{@proof.inspect}>:#{@values.inspect}"
   end
   
   # @return [self]

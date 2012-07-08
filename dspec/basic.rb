@@ -22,7 +22,7 @@ Declare do
     is [7, 1]
     
     The list.inspect do
-      is '<Integer>[7, 1]'
+      is 'Family<Integer>:[7, 1]'
     end
 
     The list.to_s do
