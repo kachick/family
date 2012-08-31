@@ -1,3 +1,4 @@
+*.orig
 *.gem
 *.rbc
 .bundle
@@ -24,3 +25,7 @@ doc/
 # editor
 *~
 .redcar
+
+
+.DS_*
+

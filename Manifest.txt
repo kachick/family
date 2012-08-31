@@ -1,8 +1,13 @@
-README.rdoc
+README.md
 LICENSE
-History.rdoc
+History.md
 Manifest.txt
 Rakefile
+Gemfile
+family.gemspec
 lib/family.rb
-dspec/basic.rb
+lib/family/version.rb
+lib/family/singleton_class.rb
+declaration/helper.rb
+declaration/basic.rb
 examples/example.rb
