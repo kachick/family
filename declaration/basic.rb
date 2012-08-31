@@ -54,7 +54,6 @@ The Family.new(Integer) do |list|
   end
 
   truthy list.valid?
-  falthy list.valid? # failure!
 end
 
 The Family.define{AND(String, /\d/)} do |list|
