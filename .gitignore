@@ -26,6 +26,6 @@ doc/
 *~
 .redcar
 
-
+*.lock*
 .DS_*
 

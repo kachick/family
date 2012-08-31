@@ -16,7 +16,7 @@ Gem::Specification.new do |gem|
 
   gem.required_ruby_version = '>= 1.9.2'
   gem.add_runtime_dependency 'validation', '~> 0.0.3'
-  gem.add_development_dependency 'declare', '~> 0.0.5.a'
+  gem.add_development_dependency 'declare', '~> 0.0.5.c'
   gem.add_development_dependency 'yard', '>= 0.8.2.1'
 end
 
