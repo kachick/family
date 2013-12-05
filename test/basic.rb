@@ -1,3 +1,5 @@
+# coding: us-ascii
+
 require_relative 'helper'
 
 The Family.new(Integer) do |list|

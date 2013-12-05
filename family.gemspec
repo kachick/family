@@ -1,5 +1,7 @@
 require File.expand_path('../lib/family/version', __FILE__)
 
+# coding: us-ascii
+
 Gem::Specification.new do |gem|
   # specific
 

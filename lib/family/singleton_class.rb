@@ -1,3 +1,5 @@
+# coding: us-ascii
+
 class Family
 
   class << self

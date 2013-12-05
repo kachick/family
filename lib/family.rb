@@ -1,3 +1,4 @@
+# coding: us-ascii
 # Copyright (C) 2012 Kenichi Kamiya
 
 # Family is a Container class
