@@ -2,7 +2,7 @@ family
 =======
 
 [![Build Status](https://secure.travis-ci.org/kachick/family.png)](http://travis-ci.org/kachick/family)
-[![Gem Version](https://badge.fury.io/rb/validation.png)](http://badge.fury.io/rb/validation)
+[![Gem Version](https://badge.fury.io/rb/family.png)](http://badge.fury.io/rb/family)
 
 Description
 ------------
