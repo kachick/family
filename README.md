@@ -2,6 +2,7 @@ family
 =======
 
 [![Build Status](https://secure.travis-ci.org/kachick/family.png)](http://travis-ci.org/kachick/family)
+[![Gem Version](https://badge.fury.io/rb/validation.png)](http://badge.fury.io/rb/validation)
 
 Description
 ------------
@@ -70,6 +71,6 @@ Link
 License
 -------
 
-The MIT X License  
+The MIT X11 License  
 Copyright (c) 2012 Kenichi Kamiya  
-See the file LICENSE for further details.
+See MIT-LICENSE for further details.
