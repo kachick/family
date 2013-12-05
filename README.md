@@ -50,8 +50,7 @@ list = Family.new{AND(Symbol, /\A\S+\z/)}
 Requirements
 ------------
 
-* Ruby 1.9.2 or later [MRI/YARV, Rubinius, JRuby](http://travis-ci.org/#!/kachick/family)
-* validation - 0.0.3.x
+* [Ruby 1.9.3 or later](http://travis-ci.org/#!/kachick/family)
 
 Installation
 -------------
@@ -67,7 +66,6 @@ Link
 * [issues](https://github.com/kachick/family/issues)
 * [CI](http://travis-ci.org/#!/kachick/family)
 * [gem](https://rubygems.org/gems/family)
-* [gem+](http://metagem.info/gems/family)
 
 License
 -------
