@@ -1,6 +1,5 @@
 # coding: us-ascii
 
-require File.expand_path('../lib/family/version', __FILE__)
 lib_name = 'family'.freeze
 require "./lib/#{lib_name}/version"
 
