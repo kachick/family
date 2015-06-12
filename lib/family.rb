@@ -121,8 +121,8 @@ class Family
 
   # @return [Family]
   def map(&block)
-    return to_enum(__callee__) unless block_given?
-  
+    return to_enum(__callee__){size} unless block_given?
+
     self.class.new @proof, @comparison, @values.map(&block)
   end
 
@@ -130,7 +130,7 @@ class Family
 
   # @return [self]
   def map!(&block)
-    return to_enum(__callee__) unless block_given?
+    return to_enum(__callee__){size} unless block_given?
 
     mapped = @values.map(&block)
     raise InvalidOperation unless similar? mapped

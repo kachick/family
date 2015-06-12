@@ -18,10 +18,6 @@ The Family.new(Integer) do |list|
   list << 1
   is [7, 1]
 
-  The list.map do
-    KIND Enumerator
-  end
-
   The list.inspect do
     is 'Family<Integer>:[7, 1]'
   end
@@ -37,6 +33,26 @@ The Family.new(Integer) do |list|
 
   The list.map(&:succ) do
     is [8, 2]
+  end
+
+  The list.map do
+    KIND Enumerator
+  end
+
+  The list.size do
+    is 2
+  end
+
+  The list.each.size do
+    is 2
+  end
+
+  The list.map.size do
+    is 2
+  end
+
+  The list.map!.size do
+    is 2
   end
 
   RESCUE ArgumentError do
