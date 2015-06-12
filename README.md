@@ -3,6 +3,7 @@ family
 
 [![Build Status](https://secure.travis-ci.org/kachick/family.png)](http://travis-ci.org/kachick/family)
 [![Gem Version](https://badge.fury.io/rb/family.png)](http://badge.fury.io/rb/family)
+[![Dependency Status](https://gemnasium.com/kachick/family.svg)](https://gemnasium.com/kachick/family)
 
 Description
 ------------
@@ -12,12 +13,12 @@ Homogeneous Array
 Features
 --------
 
-* Not only "Type" :)
+* The condition is not bound by "types" ... :)
 
 Usage
 -----
 
-### Common
+### To use
 
 ```ruby
 require 'family'
@@ -30,16 +31,16 @@ list = Family.new Integer
 list << 7      #=> 7
 list << 1.0    #=> Exception
 list << 1      #=> 1
-list.inspect #=> "Family<Integer>:[7, 1]
+list.inspect   #=> "Family<Integer>:[7, 1]
 ```
 
-### Not only "Type"
+### Not bound by "Type"
 
 ```ruby
 list = Family.new /\A\S+\z/
 list << 'a b c' #=> Exception
 list << 'abc'   #=> "abc"
-list.inspect    #=> "Family</\A\S+\z/>:["abc"]"    
+list.inspect    #=> "Family</\A\S+\z/>:["abc"]"
 ```
 
 ### HighLayer Definition
@@ -51,7 +52,7 @@ list = Family.new{AND(Symbol, /\A\S+\z/)}
 Requirements
 ------------
 
-* [Ruby 1.9.3 or later](http://travis-ci.org/#!/kachick/family)
+* [Ruby 2.0 or later](http://travis-ci.org/#!/kachick/family)
 
 Installation
 -------------

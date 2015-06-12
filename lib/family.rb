@@ -1,22 +1,22 @@
 # coding: us-ascii
 # Copyright (C) 2012 Kenichi Kamiya
 
-# Family is a Container class
-# For provide "Homogeneous Array" in Ruby
-# And it doesn't depend just the "Type" :)
+# Family is a Container class.
+# For provide "Homogeneous Array" in Ruby.
+# But the condition is not bound by "types" ... :)
 
 require 'forwardable'
 require 'validation'
 require_relative 'family/version'
 require_relative 'family/singleton_class'
 
-# @example Old Style
+# @example Simplify
 #   list = Family.new Integer
 #   list << 7    #=> 7
 #   list << 1.0  #=> Exception
 #   list << 1    #=> 1
 #   list.inspect #=> "Family<Integer>:[7, 1]"
-# @example Not only "Type"
+# @example Not bound by "Type"
 #   list = Family.new /\A\S+\z/
 #   list << 'a b c' #=> Exception
 #   list << 'abc'   #=> "abc"
@@ -36,7 +36,7 @@ class Family
   include Validation
 
   class MismatchedObject < TypeError; end
-  
+
   class DSL
 
     include Validation
@@ -45,13 +45,13 @@ class Family
   end
 
   attr_reader :proof, :comparison
-  
+
   def initialize(proof, comparison=:===, values=[])
     @proof, @comparison, @values = proof, comparison, values.to_ary
 
     raise MismatchedObject unless valid?
   end
-  
+
   def_delegators :@values, :join, :<=>, :==, :[], :at, :assoc,
     :rassoc, :delete, :delete_at, :empty?, :fetch, :first, :last, :take, :tail,
     :flatten, :include?, :index, :to_s, :length, :size, :pack,
@@ -60,7 +60,7 @@ class Family
 
   def_enums :@values, :each, :each_index, :cycle, :combination,
     :repeated_combination, :permutation, :repeated_permutation
-  
+
   def_set_operator :&
   def_set_operator :+
   def_set_operator :- # todo
@@ -70,15 +70,15 @@ class Family
   def values
     @values.dup
   end
-  
+
   alias_method :to_ary, :values
   alias_method :to_a, :values
-  
+
   # @return [String]
   def inspect
     "#{self.class}<#{@proof.inspect}>:#{@values.inspect}"
   end
-  
+
   # @return [self]
   def <<(value)
     raise MismatchedObject unless family? value
@@ -88,7 +88,7 @@ class Family
   end
 
   alias_method :push, :<<
-  
+
   # @return [self]
   def unshift(value)
     raise MismatchedObject unless family? value
@@ -96,7 +96,7 @@ class Family
     @values.unshift value
     self
   end
-  
+
   # @param [#all?] list
   # @return [self]
   def concat(list)
@@ -105,7 +105,7 @@ class Family
     @values.concat list
     self
   end
-  
+
   def family?(value)
     @proof.__send__ @comparison, value
   end
@@ -118,27 +118,27 @@ class Family
   def valid?
     similar? @values
   end
-  
+
   # @return [Family]
   def map(&block)
     self.class.new @proof, @comparison, @values.map(&block)
   end
-  
+
   alias_method :collect, :map
-  
+
   # @return [self]
   def map!(&block)
     return to_enum(__callee__) unless block_given?
-    
+
     mapped = @values.map(&block)
     raise InvalidOperation unless similar? mapped
-    
+
     @values = mapped
     self
   end
-  
+
   alias_method :collect!, :map!
-  
+
   # @return [Family]
   def *(times_or_delimiter)
     case times_or_delimiter
@@ -150,22 +150,22 @@ class Family
       raise ArgumentError
     end
   end
-  
+
   # @return [self]
   def to_family
     self
   end
-  
+
   # @return [self]
   def freeze
     @values.freeze
     super
   end
-  
+
   # @param [Symbol] name
   def method_missing(name, *args, &block)
     return super unless @values.respond_to? name
-    
+
     warn "WARN:#{__FILE__}:#{__LINE__}:unexpected method, not cheked any proofs"
     @values.__send__ name, *args, &block
   end
@@ -175,114 +175,114 @@ class Family
     @values.clear
     self
   end
-  
+
   # @return [self]
   def compact
     @values.compact
   end
-  
+
   # @return [self, nil]
   def compact!
     @values.compact! && self
   end
-  
+
   # @return [Number]
   def hash
     _comparison_values.hash
   end
-  
+
   def eql?(other)
     other.kind_of?(::Family) &&
       (_comparison_values == other._comparison_values)
   end
-  
+
   # @return [self, nil]
   def reject!(&block)
     return to_enum(__callee__) unless block_given?
-    
+
     @values.reject!(&block) && self
   end
-  
+
   # @return [self]
   def delete_if(&block)
     return to_enum(__callee__) unless block_given?
-    
+
     reject!(&block)
     self
   end
-  
+
   # @return [self, nil]
   def select!(&block)
     return to_enum(__callee__) unless block_given?
-    
+
     @values.select!(&block) && self
   end
-  
+
   def keep_if(&block)
     return to_enum(__callee__) unless block_given?
-    
+
     select!(&block)
     self
   end
-  
+
   # @return [self]
   def fill(*args, &block)
     filled = @values.dup.fill(*args, &block)
     raise MismatchedObject unless similar? filled
-    
+
     @values = filled
     self
   end
-  
+
   # @param [#all?] list
   # @return [self]
   def replace(list)
     raise MismatchedObject unless similar? list
-    
+
     @values = list.dup
     self
   end
-  
+
   # @return [Family]
   def reverse
     self.class.new @proof, @comparison, @values.reverse
   end
-  
+
   # @return [self]
   def reverse!
     @values.reverse!
     self
   end
-  
+
   # @param [Integer] pos
   # @return [Family]
   def rotate(pos=1)
     self.class.new @proof, @comparison, @values.rotate(pos)
   end
-  
+
   # @param [Integer] pos
   # @return [self]
   def rotate!(pos=1)
     @values.rotate! pos
     self
   end
-  
+
   # @return [Family]
   def shuffle(options={})
     self.class.new @proof, @comparison, @values.shuffle(options)
   end
-  
+
   # @return [self]
   def shuffle!(options={})
     @values.shuffle! options
     self
   end
-  
+
   # @return [Family]
   def sort(&block)
     self.class.new @proof, @comparison, @values.sort(&block)
   end
-  
+
   # @return [self, nil]
   def sort!(&block)
     @values.sort!(&block) && self
@@ -292,42 +292,42 @@ class Family
   def sort_by(&block)
     self.class.new @proof, @comparison, @values.sort_by(&block)
   end
-  
+
   # @return [self, nil]
   def sort_by!(&block)
     @values.sort_by!(&block) && self
   end
-  
+
   # @return [Family]
   def uniq(&block)
     self.class.new @proof, @comparison, @values.uniq(&block)
   end
-  
+
   # @return [self, nil]
   def uniq!(&block)
     @values.uniq!(&block) && self
   end
-  
+
   # @param [Integer, Range<Integer>] selectors
   # @return [Family]
   def values_at(*selectors)
     self.class.new @proof, @comparison, @values.values_at(*selectors)
   end
-  
+
   protected
-  
+
   def _values
     @values
   end
-  
+
   def _comparison_values
     [@proof, @comparison, @values]
   end
-  
+
   private
-  
+
   def initialize_copy(original)
     @values = @values.dup
   end
-  
+
 end
