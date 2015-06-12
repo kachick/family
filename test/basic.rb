@@ -17,7 +17,7 @@ The Family.new(Integer) do |list|
   is [7]
   list << 1
   is [7, 1]
-  
+
   The list.inspect do
     is 'Family<Integer>:[7, 1]'
   end
@@ -33,6 +33,10 @@ The Family.new(Integer) do |list|
 
   The list.map(&:succ) do
     is [8, 2]
+  end
+
+  RESCUE ArgumentError do
+    is.to_h
   end
 
   RESCUE Exception do
@@ -56,6 +60,24 @@ The Family.new(Integer) do |list|
   end
 
   truthy list.valid?
+end
+
+The Family.define{AND(Array, ->ary{ary.size == 2 })} do |list|
+  list << [1, 2]
+
+  RESCUE Exception do
+    list << [1, 2, 3]
+  end
+
+  list << [10, 20]
+
+  The list.to_h do
+    is [[1, 2], [10, 20]].to_h
+  end
+
+  The Family.instance_method(:to_h).arity do
+    is Array.instance_method(:to_h).arity
+  end
 end
 
 The Family.define{AND(String, /\d/)} do |list|

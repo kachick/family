@@ -314,6 +314,12 @@ class Family
     self.class.new @proof, @comparison, @values.values_at(*selectors)
   end
 
+  # @return [Hash]
+  # This definition is adjusting the arity number with Array#to_h.
+  def to_h
+    @values.to_h
+  end
+
   protected
 
   def _values
