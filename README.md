@@ -52,7 +52,7 @@ list = Family.new{AND(Symbol, /\A\S+\z/)}
 Requirements
 ------------
 
-* [Ruby 2.0 or later](http://travis-ci.org/#!/kachick/family)
+* [Ruby 2.1 or later](http://travis-ci.org/#!/kachick/family)
 
 Installation
 -------------

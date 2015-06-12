@@ -14,7 +14,7 @@ Gem::Specification.new do |gem|
   gem.name          = lib_name.dup
   gem.version       = Family::VERSION.dup
 
-  gem.required_ruby_version = '>= 2.0.0'
+  gem.required_ruby_version = '>= 2.1'
   gem.add_runtime_dependency 'validation', '~> 0.0.7'
 
   gem.add_development_dependency 'declare', '~> 0.0.6'
