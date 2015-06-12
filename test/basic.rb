@@ -18,6 +18,10 @@ The Family.new(Integer) do |list|
   list << 1
   is [7, 1]
 
+  The list.map do
+    KIND Enumerator
+  end
+
   The list.inspect do
     is 'Family<Integer>:[7, 1]'
   end

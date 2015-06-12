@@ -121,6 +121,8 @@ class Family
 
   # @return [Family]
   def map(&block)
+    return to_enum(__callee__) unless block_given?
+  
     self.class.new @proof, @comparison, @values.map(&block)
   end
 
