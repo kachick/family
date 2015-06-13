@@ -8,7 +8,7 @@ Gem::Specification.new do |gem|
 
   gem.description   = %q{Homogeneous Array}
   gem.summary       = gem.description.dup
-  gem.homepage      = 'https://github.com/kachick/family'
+  gem.homepage      = "https://github.com/kachick/#{lib_name}"
   gem.license       = 'MIT'
   gem.name          = lib_name.dup
   gem.version       = Family::VERSION.dup
