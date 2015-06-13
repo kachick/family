@@ -56,7 +56,7 @@ class Family
     :rassoc, :delete, :delete_at, :empty?, :fetch, :first, :last, :take, :tail,
     :flatten, :include?, :index, :to_s, :length, :size, :pack,
     :pop, :product, :reverse_each, :rindex, :sample,
-    :slice, :slice!, :transpose, :zip
+    :slice, :slice!, :transpose, :zip, :bsearch
 
   def_enums :@values, :each, :each_index, :cycle, :combination,
     :repeated_combination, :permutation, :repeated_permutation
