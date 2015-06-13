@@ -82,6 +82,21 @@ The Family.new(Integer) do |list|
   truthy list.valid?
 end
 
+The Family.define{OR(Integer, nil)} do |list|
+  list << nil << 1 << nil << 3 << 4 << nil << nil << 7 << nil
+  
+  RESCUE Exception do
+    list << false
+  end
+  
+  The list.compact do |compact|
+    KIND Family
+    The compact.to_a do
+      is [1, 3, 4, 7]
+    end
+  end
+end
+
 The Family.define{AND(Array, ->ary{ary.size == 2 })} do |list|
   list << [1, 2]
 

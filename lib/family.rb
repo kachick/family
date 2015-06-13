@@ -178,9 +178,9 @@ class Family
     self
   end
 
-  # @return [self]
+  # @return [Family]
   def compact
-    @values.compact
+    self.class.new @proof, @comparison, @values.compact
   end
 
   # @return [self, nil]
