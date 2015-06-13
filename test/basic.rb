@@ -66,6 +66,10 @@ The Family.new(Integer) do |list|
   The (list & [7]) do
     is [7]
   end
+  
+  The list.sort.bsearch{|x| x > 4} do
+    is 7
+  end
 
   The list.dup.unshift(3) do |triple|
     is [3, 7, 1]
