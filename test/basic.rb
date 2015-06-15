@@ -19,7 +19,7 @@ The Family.new(Integer) do |list|
   is [7, 1]
 
   The list.inspect do
-    is 'Family<Integer>:[7, 1]'
+    is 'Integer ===: [7, 1]'
   end
 
   The list.to_s do
@@ -86,6 +86,22 @@ The Family.new(Integer) do |list|
   truthy list.valid?
 end
 
+The Family.new(1, :equal?) do |list|
+  list << 1
+  
+  RESCUE Exception do
+    list << 2
+  end
+  
+  RESCUE Exception do
+    list << 1.1
+  end
+  
+  The list.inspect do
+    is '1 equal?: [1]'
+  end
+end
+
 The Family.define{OR(Integer, nil)} do |list|
   list << nil << 1 << nil << 3 << 4 << nil << nil << 7 << nil
   
@@ -103,6 +119,10 @@ end
 
 The Family.define{AND(Array, ->ary{ary.size == 2 })} do |list|
   list << [1, 2]
+
+  The list.inspect do
+    is 'a Proc ===: [[1, 2]]'
+  end
 
   RESCUE Exception do
     list << [1, 2, 3]

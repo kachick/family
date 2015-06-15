@@ -15,12 +15,12 @@ require_relative 'family/singleton_class'
 #   list << 7    #=> 7
 #   list << 1.0  #=> Exception
 #   list << 1    #=> 1
-#   list.inspect #=> "Family<Integer>:[7, 1]"
+#   list.inspect #=> "Integer ===: [7, 1]"
 # @example Not bound by "Type"
 #   list = Family.new /\A\S+\z/
 #   list << 'a b c' #=> Exception
 #   list << 'abc'   #=> "abc"
-#   list.inspect    #=> "Family</\A\S+\z/>:["abc"]"
+#   list.inspect    #=> "/\A\S+\z/ ===: ["abc"]"
 # @example HighLayer definition
 #   list = Family.define { AND(Symbol, /\A\S+\z/) }
 # @note return self -> Array
@@ -76,7 +76,8 @@ class Family
 
   # @return [String]
   def inspect
-    "#{self.class}<#{@proof.inspect}>:#{@values.inspect}"
+    condition = @proof.kind_of?(Proc) ? 'a Proc' : @proof.inspect
+    "#{condition} #{@comparison}: #{@values.inspect}"
   end
 
   # @return [self]
