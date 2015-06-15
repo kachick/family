@@ -55,12 +55,12 @@ The Family.new(Integer) do |list|
     is 2
   end
 
-  RESCUE ArgumentError do
+  CATCH ArgumentError do
     is.to_h
   end
 
-  RESCUE Exception do
-    is << 'String'
+  CATCH Family::MismatchedObject do
+    list << 'String'
   end
 
   The (list & [7]) do
@@ -79,7 +79,7 @@ The Family.new(Integer) do |list|
     end
   end
 
-  RESCUE Exception do
+  CATCH Family::MismatchedObject do
     list.unshift 3.0
   end
 
@@ -89,11 +89,11 @@ end
 The Family.new(1, :equal?) do |list|
   list << 1
   
-  RESCUE Exception do
+  CATCH Family::MismatchedObject do
     list << 2
   end
   
-  RESCUE Exception do
+  CATCH Family::MismatchedObject do
     list << 1.1
   end
   
@@ -105,7 +105,7 @@ end
 The Family.define{OR(Integer, nil)} do |list|
   list << nil << 1 << nil << 3 << 4 << nil << nil << 7 << nil
   
-  RESCUE Exception do
+  CATCH Family::MismatchedObject do
     list << false
   end
   
@@ -124,7 +124,7 @@ The Family.define{AND(Array, ->ary{ary.size == 2 })} do |list|
     is 'a Proc ===: [[1, 2]]'
   end
 
-  RESCUE Exception do
+  CATCH Family::MismatchedObject do
     list << [1, 2, 3]
   end
 
@@ -144,11 +144,11 @@ The Family.define{AND(String, /\d/)} do |list|
   is ['8']
   truthy list.valid?
 
-  RESCUE Exception do
+  CATCH Family::MismatchedObject do
     list << 8
   end
 
-  RESCUE Exception do
+  CATCH Family::MismatchedObject do
     list << 'String'
   end
 
