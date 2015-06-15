@@ -22,7 +22,7 @@ require_relative 'family/singleton_class'
 #   list << 'abc'   #=> "abc"
 #   list.inspect    #=> "Family</\A\S+\z/>:["abc"]"
 # @example HighLayer definition
-#   list = Family.new{AND(Symbol, /\A\S+\z/)}
+#   list = Family.define { AND(Symbol, /\A\S+\z/) }
 # @note return self -> Array
 #   * #flatten is different
 #   * #flatten! is none

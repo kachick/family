@@ -46,7 +46,7 @@ list.inspect    #=> "Family</\A\S+\z/>:["abc"]"
 ### HighLayer Definition
 
 ```ruby
-list = Family.new{AND(Symbol, /\A\S+\z/)}
+list = Family.define { AND(Symbol, /\A\S+\z/) }
 ```
 
 Requirements

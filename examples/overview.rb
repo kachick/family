@@ -10,6 +10,7 @@ list << 7 #=> 7
 p list << 1 #=> 1
 p list.inspect #=> Integer[7, 1]
 
-list = Family.define{AND(String, /\d/)}
+list = Family.define { AND(Symbol, /\A\S+\z/) }
 #~ list << 'k'
-list << '8'
+# list << '8' #=> Exception
+p list.inspect
