@@ -33,8 +33,6 @@ class Family
 
       define_method operator do |other|
         other = other.kind_of?(::Family) ? other._values : other.to_ary
-        raise MismatchedObject unless similar? other
-        
         self.class.__new__ @proof, @comparison, @values.__send__(operator, other)
       end
   

@@ -67,7 +67,7 @@ class Family
 
   def_set_operator :&
   def_set_operator :+
-  def_set_operator :- # todo
+  def_set_operator :-
   def_set_operator :|
 
   # @return [Array]
