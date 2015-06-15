@@ -4,10 +4,12 @@ class Family
 
   class << self
     
+    # @return [Family]
     def define(comparison: :===, values: [], &block)
       __new__ DSL.new.instance_exec(&block), comparison, values
     end
 
+    # @private
     def __new__(proof, comparison, values)
       new proof, comparison: comparison, values: values
     end    
