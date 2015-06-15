@@ -46,7 +46,11 @@ list.inspect    #=> "/\A\S+\z/ ===: ["abc"]"
 ### HighLayer Definition
 
 ```ruby
-list = Family.define { AND(Symbol, /\A\S+\z/) }
+list = Family.define { AND(Float, 3..6) }
+list << 4       #=> Exception
+list << 2.0     #=> Exception
+list << 4.0     #=> 4.0
+list.inspect    #=> a Proc ===: [4.0]
 ```
 
 Requirements
