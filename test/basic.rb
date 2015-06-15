@@ -157,10 +157,6 @@ The Family.define{AND(Array, ->ary{ary.size == 2 })} do |list|
   The list.to_h do
     is [[1, 2], [10, 20]].to_h
   end
-
-  The Family.instance_method(:to_h).arity do
-    is Array.instance_method(:to_h).arity
-  end
 end
 
 The Family.define{AND(String, /\d/)} do |list|

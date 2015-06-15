@@ -60,7 +60,7 @@ class Family
     :rassoc, :delete, :delete_at, :empty?, :fetch, :first, :last, :take, :tail,
     :flatten, :include?, :index, :to_s, :length, :size, :pack,
     :pop, :product, :reverse_each, :rindex, :sample,
-    :slice, :slice!, :transpose, :zip, :bsearch
+    :slice, :slice!, :transpose, :zip, :to_h, :bsearch
 
   def_enums :@values, :each, :each_index, :cycle, :combination,
     :repeated_combination, :permutation, :repeated_permutation
@@ -319,12 +319,6 @@ class Family
   # @return [Family]
   def values_at(*selectors)
     self.class.__new__ @proof, @comparison, @values.values_at(*selectors)
-  end
-
-  # @return [Hash]
-  # This definition is adjusting the arity number with Array#to_h.
-  def to_h
-    @values.to_h
   end
 
   protected
