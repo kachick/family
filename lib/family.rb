@@ -50,7 +50,7 @@ class Family
 
   attr_reader :proof, :comparison
 
-  def initialize(proof, comparison=:===, values=[])
+  def initialize(proof, comparison: :===, values: [])
     @proof, @comparison, @values = proof, comparison, values.to_ary
 
     raise MismatchedObject unless valid?
@@ -128,7 +128,7 @@ class Family
   def map(&block)
     return to_enum(__callee__){size} unless block_given?
 
-    self.class.new @proof, @comparison, @values.map(&block)
+    self.class.__new__ @proof, @comparison, @values.map(&block)
   end
 
   alias_method :collect, :map
@@ -150,7 +150,7 @@ class Family
   def *(times_or_delimiter)
     case times_or_delimiter
     when Integer
-      self.class.new @proof, @comparison, @values * times_or_delimiter
+      self.class.__new__ @proof, @comparison, @values * times_or_delimiter
     when String
       join times_or_delimiter
     else
@@ -185,7 +185,7 @@ class Family
 
   # @return [Family]
   def compact
-    self.class.new @proof, @comparison, @values.compact
+    self.class.__new__ @proof, @comparison, @values.compact
   end
 
   # @return [self, nil]
@@ -252,7 +252,7 @@ class Family
 
   # @return [Family]
   def reverse
-    self.class.new @proof, @comparison, @values.reverse
+    self.class.__new__ @proof, @comparison, @values.reverse
   end
 
   # @return [self]
@@ -264,7 +264,7 @@ class Family
   # @param [Integer] pos
   # @return [Family]
   def rotate(pos=1)
-    self.class.new @proof, @comparison, @values.rotate(pos)
+    self.class.__new__ @proof, @comparison, @values.rotate(pos)
   end
 
   # @param [Integer] pos
@@ -276,7 +276,7 @@ class Family
 
   # @return [Family]
   def shuffle(options={})
-    self.class.new @proof, @comparison, @values.shuffle(options)
+    self.class.__new__ @proof, @comparison, @values.shuffle(options)
   end
 
   # @return [self]
@@ -287,7 +287,7 @@ class Family
 
   # @return [Family]
   def sort(&block)
-    self.class.new @proof, @comparison, @values.sort(&block)
+    self.class.__new__ @proof, @comparison, @values.sort(&block)
   end
 
   # @return [self, nil]
@@ -297,7 +297,7 @@ class Family
 
   # @return [Family]
   def sort_by(&block)
-    self.class.new @proof, @comparison, @values.sort_by(&block)
+    self.class.__new__ @proof, @comparison, @values.sort_by(&block)
   end
 
   # @return [self, nil]
@@ -307,7 +307,7 @@ class Family
 
   # @return [Family]
   def uniq(&block)
-    self.class.new @proof, @comparison, @values.uniq(&block)
+    self.class.__new__ @proof, @comparison, @values.uniq(&block)
   end
 
   # @return [self, nil]
@@ -318,7 +318,7 @@ class Family
   # @param [Integer, Range<Integer>] selectors
   # @return [Family]
   def values_at(*selectors)
-    self.class.new @proof, @comparison, @values.values_at(*selectors)
+    self.class.__new__ @proof, @comparison, @values.values_at(*selectors)
   end
 
   # @return [Hash]

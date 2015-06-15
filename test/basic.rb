@@ -86,7 +86,7 @@ The Family.new(Integer) do |list|
   truthy list.valid?
 end
 
-The Family.new(1, :equal?) do |list|
+The Family.new(1, comparison: :equal?) do |list|
   list << 1
   
   CATCH Family::MismatchedObject do

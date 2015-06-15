@@ -4,10 +4,14 @@ class Family
 
   class << self
     
-    def define(values=[], &block)
-      new DSL.new.instance_exec(&block), :===, values
+    def define(comparison: :===, values: [], &block)
+      __new__ DSL.new.instance_exec(&block), comparison, values
     end
-    
+
+    def __new__(proof, comparison, values)
+      new proof, comparison: comparison, values: values
+    end    
+
     private
     
     def def_enum(reciever, name)
@@ -29,7 +33,7 @@ class Family
         other = other.kind_of?(::Family) ? other._values : other.to_ary
         raise MismatchedObject unless similar? other
         
-        self.class.new @proof, @comparison, @values.__send__(operator, other)
+        self.class.__new__ @proof, @comparison, @values.__send__(operator, other)
       end
   
     end
