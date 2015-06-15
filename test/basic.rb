@@ -67,6 +67,30 @@ The Family.new(Integer) do |list|
     is [7]
   end
   
+  The (list + [3]) do
+    is [7, 1, 3]
+  end
+  
+  CATCH Family::MismatchedObject do
+    list + [3.0]
+  end
+
+  The (list | [3]) do
+    is [7, 1, 3]
+  end
+
+  CATCH Family::MismatchedObject do
+    list | [3.0]
+  end
+  
+  The (list - [1]) do
+    is [7]
+  end
+
+  The (list - [1.0]) do
+    is [7, 1]
+  end
+
   The list.sort.bsearch{|x| x > 4} do
     is 7
   end
