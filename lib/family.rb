@@ -224,6 +224,7 @@ class Family
 
     @values.select!(&block) && self
   end
+  alias_method :filter!, :select!
 
   def keep_if(&block)
     return to_enum(__callee__) unless block_given?
