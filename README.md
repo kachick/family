@@ -56,7 +56,7 @@ list.inspect    #=> a Proc ===: [4.0]
 Requirements
 ------------
 
-* [Ruby 2.1 or later](http://travis-ci.org/#!/kachick/family)
+* [Ruby 2.2 or later](http://travis-ci.org/#!/kachick/family)
 
 Installation
 -------------
