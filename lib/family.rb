@@ -165,14 +165,6 @@ class Family
     super
   end
 
-  # @param [Symbol] name
-  def method_missing(name, *args, &block)
-    return super unless @values.respond_to?(name)
-
-    warn("WARN:#{__FILE__}:#{__LINE__}:unexpected method, not checked any patterns")
-    @values.__send__(name, *args, &block)
-  end
-
   # @return [self]
   def clear
     @values.clear
