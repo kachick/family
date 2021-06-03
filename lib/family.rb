@@ -1,4 +1,6 @@
 # coding: us-ascii
+# frozen_string_literal: true
+
 # Copyright (C) 2012 Kenichi Kamiya
 
 # Family is a Container class.
@@ -6,7 +8,7 @@
 # But the condition is not bound by "types" ... :)
 
 require 'forwardable'
-require 'validation'
+require 'eqq'
 require_relative 'family/version'
 require_relative 'family/singleton_class'
 
@@ -34,36 +36,27 @@ require_relative 'family/singleton_class'
 # @note removed from Array
 #   * #flatten! is none
 class Family
-
   extend Forwardable
   include Enumerable
-  include Validation
 
   class MismatchedObject < TypeError; end
 
-  class DSL
+  attr_reader :pattern
 
-    include Validation
-    include Validation::Condition
-
-  end
-
-  attr_reader :proof, :comparison
-
-  def initialize(proof, comparison: :===, values: [])
-    @proof, @comparison, @values = proof, comparison, values.to_ary
+  def initialize(pattern, values: [])
+    @pattern, @values = pattern, values.to_ary
 
     raise MismatchedObject unless valid?
   end
 
   def_delegators :@values, :join, :<=>, :==, :[], :at, :assoc,
-    :rassoc, :delete, :delete_at, :empty?, :fetch, :first, :last, :take, :tail,
-    :flatten, :include?, :index, :to_s, :length, :size, :pack,
-    :pop, :product, :reverse_each, :rindex, :sample,
-    :slice, :slice!, :transpose, :zip, :to_h, :bsearch
+                 :rassoc, :delete, :delete_at, :empty?, :fetch, :first, :last, :take, :tail,
+                 :flatten, :include?, :index, :to_s, :length, :size, :pack,
+                 :pop, :product, :reverse_each, :rindex, :sample,
+                 :slice, :slice!, :transpose, :zip, :to_h, :bsearch
 
-  def_enums :@values, :each, :each_index, :cycle, :combination,
-    :repeated_combination, :permutation, :repeated_permutation
+  def_enums :each, :each_index, :cycle, :combination,
+            :repeated_combination, :permutation, :repeated_permutation
 
   def_set_operator :&
   def_set_operator :+
@@ -80,13 +73,12 @@ class Family
 
   # @return [String]
   def inspect
-    condition = @proof.kind_of?(Proc) ? 'a Proc' : @proof.inspect
-    "#{condition} #{@comparison}: #{@values.inspect}"
+    "Family<#{@pattern.inspect}>: #{@values.inspect}"
   end
 
   # @return [self]
   def <<(value)
-    raise MismatchedObject unless family? value
+    raise MismatchedObject unless family?(value)
 
     @values << value
     self
@@ -96,49 +88,49 @@ class Family
 
   # @return [self]
   def unshift(value)
-    raise MismatchedObject unless family? value
+    raise MismatchedObject unless family?(value)
 
-    @values.unshift value
+    @values.unshift(value)
     self
   end
 
   # @param [#all?] list
   # @return [self]
   def concat(list)
-    raise MismatchedObject unless similar? list
+    raise MismatchedObject unless similar?(list)
 
-    @values.concat list
+    @values.concat(list)
     self
   end
 
   def family?(value)
-    @proof.__send__ @comparison, value
+    @pattern === value
   end
 
   # @param [#all?] list
   def similar?(list)
-    list.all?{|v|family? v}
+    list.all? { |v| family?(v) }
   end
 
   def valid?
-    similar? @values
+    similar?(@values)
   end
 
   # @return [Family]
   def map(&block)
-    return to_enum(__callee__){size} unless block_given?
+    return to_enum(__callee__) { size } unless block
 
-    self.class.__new__ @proof, @comparison, @values.map(&block)
+    self.class.__new__(@pattern, @values.map(&block))
   end
 
   alias_method :collect, :map
 
   # @return [self]
   def map!(&block)
-    return to_enum(__callee__){size} unless block_given?
+    return to_enum(__callee__) { size } unless block
 
     mapped = @values.map(&block)
-    raise InvalidOperation unless similar? mapped
+    raise InvalidOperation unless similar?(mapped)
 
     @values = mapped
     self
@@ -150,9 +142,9 @@ class Family
   def *(times_or_delimiter)
     case times_or_delimiter
     when Integer
-      self.class.__new__ @proof, @comparison, @values * times_or_delimiter
+      self.class.__new__(@pattern, @values * times_or_delimiter)
     when String
-      join times_or_delimiter
+      join(times_or_delimiter)
     else
       raise ArgumentError
     end
@@ -169,14 +161,6 @@ class Family
     super
   end
 
-  # @param [Symbol] name
-  def method_missing(name, *args, &block)
-    return super unless @values.respond_to? name
-
-    warn "WARN:#{__FILE__}:#{__LINE__}:unexpected method, not cheked any proofs"
-    @values.__send__ name, *args, &block
-  end
-
   # @return [self]
   def clear
     @values.clear
@@ -185,7 +169,7 @@ class Family
 
   # @return [Family]
   def compact
-    self.class.__new__ @proof, @comparison, @values.compact
+    self.class.__new__(@pattern, @values.compact)
   end
 
   # @return [self, nil]
@@ -205,14 +189,14 @@ class Family
 
   # @return [self, nil]
   def reject!(&block)
-    return to_enum(__callee__) unless block_given?
+    return to_enum(__callee__) unless block
 
     @values.reject!(&block) && self
   end
 
   # @return [self]
   def delete_if(&block)
-    return to_enum(__callee__) unless block_given?
+    return to_enum(__callee__) unless block
 
     reject!(&block)
     self
@@ -220,14 +204,14 @@ class Family
 
   # @return [self, nil]
   def select!(&block)
-    return to_enum(__callee__) unless block_given?
+    return to_enum(__callee__) unless block
 
     @values.select!(&block) && self
   end
   alias_method :filter!, :select!
 
   def keep_if(&block)
-    return to_enum(__callee__) unless block_given?
+    return to_enum(__callee__) unless block
 
     select!(&block)
     self
@@ -236,7 +220,7 @@ class Family
   # @return [self]
   def fill(*args, &block)
     filled = @values.dup.fill(*args, &block)
-    raise MismatchedObject unless similar? filled
+    raise MismatchedObject unless similar?(filled)
 
     @values = filled
     self
@@ -245,7 +229,7 @@ class Family
   # @param [#all?] list
   # @return [self]
   def replace(list)
-    raise MismatchedObject unless similar? list
+    raise MismatchedObject unless similar?(list)
 
     @values = list.dup
     self
@@ -253,7 +237,7 @@ class Family
 
   # @return [Family]
   def reverse
-    self.class.__new__ @proof, @comparison, @values.reverse
+    self.class.__new__(@pattern, @values.reverse)
   end
 
   # @return [self]
@@ -265,30 +249,30 @@ class Family
   # @param [Integer] pos
   # @return [Family]
   def rotate(pos=1)
-    self.class.__new__ @proof, @comparison, @values.rotate(pos)
+    self.class.__new__(@pattern, @values.rotate(pos))
   end
 
   # @param [Integer] pos
   # @return [self]
   def rotate!(pos=1)
-    @values.rotate! pos
+    @values.rotate!(pos)
     self
   end
 
   # @return [Family]
-  def shuffle(options={})
-    self.class.__new__ @proof, @comparison, @values.shuffle(options)
+  def shuffle(...)
+    self.class.__new__(@pattern, @values.shuffle(...))
   end
 
   # @return [self]
-  def shuffle!(options={})
-    @values.shuffle! options
+  def shuffle!(...)
+    @values.shuffle!(...)
     self
   end
 
   # @return [Family]
   def sort(&block)
-    self.class.__new__ @proof, @comparison, @values.sort(&block)
+    self.class.__new__(@pattern, @values.sort(&block))
   end
 
   # @return [self, nil]
@@ -298,7 +282,7 @@ class Family
 
   # @return [Family]
   def sort_by(&block)
-    self.class.__new__ @proof, @comparison, @values.sort_by(&block)
+    self.class.__new__(@pattern, @values.sort_by(&block))
   end
 
   # @return [self, nil]
@@ -308,7 +292,7 @@ class Family
 
   # @return [Family]
   def uniq(&block)
-    self.class.__new__ @proof, @comparison, @values.uniq(&block)
+    self.class.__new__(@pattern, @values.uniq(&block))
   end
 
   # @return [self, nil]
@@ -319,7 +303,7 @@ class Family
   # @param [Integer, Range<Integer>] selectors
   # @return [Family]
   def values_at(*selectors)
-    self.class.__new__ @proof, @comparison, @values.values_at(*selectors)
+    self.class.__new__(@pattern, @values.values_at(*selectors))
   end
 
   protected
@@ -329,7 +313,7 @@ class Family
   end
 
   def _comparison_values
-    [@proof, @comparison, @values]
+    [@pattern, @values]
   end
 
   private
@@ -337,5 +321,4 @@ class Family
   def initialize_copy(original)
     @values = @values.dup
   end
-
 end

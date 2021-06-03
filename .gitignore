@@ -1,31 +1,28 @@
-*.orig
-*.gem
-*.rbc
-.bundle
-.config
-coverage
-coverage.data
-InstalledFiles
-lib/bundler/man
-pkg
-rdoc
-spec/reports
-test/tmp
-test/version_tmp
-tmp
+/coverage/
+/pkg/
+/spec/reports/
+/test/tmp/
+/tmp/
 
-# YARD artifacts
-.yardoc
-_yardoc
-doc/
+.rspec_status
 
-# tmp-old
-.old
+# Used by dotenv library to load environment variables.
+.env
+.env.production
 
-# editor
-*~
-.redcar
+# Ignore Byebug command history file.
+.byebug_history
 
-*.lock*
-.DS_*
+## Documentation cache and generated files:
+/.yardoc/
+/_yardoc/
+/doc/
+/rdoc/
 
+## Environment normalization:
+/.bundle/
+/vendor/
+
+*.lock
+
+.DS_Store

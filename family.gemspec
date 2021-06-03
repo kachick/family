@@ -1,36 +1,47 @@
 # coding: us-ascii
+# frozen_string_literal: true
 
-lib_name = 'family'.freeze
-require "./lib/#{lib_name}/version"
+lib_name = 'family'
+
+require_relative './lib/family/version'
+repository_url = "https://github.com/kachick/#{lib_name}"
 
 Gem::Specification.new do |gem|
-  # specific
-
-  gem.description   = %q{Homogeneous Array}
-  gem.summary       = gem.description.dup
-  gem.homepage      = "https://github.com/kachick/#{lib_name}"
+  gem.summary       = %q{Typed Array}
+  gem.description   = <<-'DESCRIPTION'
+    Typed Array
+  DESCRIPTION
+  gem.homepage      = repository_url
   gem.license       = 'MIT'
-  gem.name          = lib_name.dup
-  gem.version       = Family::VERSION.dup
+  gem.name          = lib_name
+  gem.version       = Family::VERSION
 
-  gem.required_ruby_version = '>= 2.2'
-  gem.add_runtime_dependency 'validation'
+  gem.metadata = {
+    'documentation_uri' => 'https://kachick.github.io/family/',
+    'homepage_uri'      => repository_url,
+    'source_code_uri'   => repository_url,
+    'bug_tracker_uri'   => "#{repository_url}/issues"
+  }
 
-  gem.add_development_dependency 'declare'
-  gem.add_development_dependency 'yard', '>= 0.8.7.6', '< 2'
-  gem.add_development_dependency 'rake', '>= 10', '< 20'
-  gem.add_development_dependency 'bundler', '>= 1.10', '< 2'
+  gem.required_ruby_version = Gem::Requirement.new('>= 2.7.0')
 
-  if RUBY_ENGINE == 'rbx'
-    gem.add_dependency 'rubysl', '~> 2.1'
-  end
+  gem.add_runtime_dependency 'eqq', '>= 0.0.5', '< 0.1.0'
 
   # common
 
   gem.authors       = ['Kenichi Kamiya']
   gem.email         = ['kachick1+ruby@gmail.com']
-  gem.files         = `git ls-files`.split($\)
-  gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
-  gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
+  git_managed_files = `git ls-files`.lines.map(&:chomp)
+  might_be_parsing_by_tool_as_dependabot = git_managed_files.empty?
+  base_files = Dir['README*', '*LICENSE*',  'lib/**/*', 'sig/**/*'].uniq
+  files = might_be_parsing_by_tool_as_dependabot ? base_files : (base_files & git_managed_files)
+
+  unless might_be_parsing_by_tool_as_dependabot
+    if files.grep(%r!\A(?:lib|sig)/!).size < 2
+      raise "obvious mistaken in packaging files, looks shortage: #{files.inspect}"
+    end
+  end
+
+  gem.files         = files
   gem.require_paths = ['lib']
 end
