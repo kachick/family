@@ -59,7 +59,7 @@ class Family
                  :pop, :product, :reverse_each, :rindex, :sample,
                  :slice, :slice!, :transpose, :zip, :to_h, :bsearch
 
-  def_enums :@values, :each, :each_index, :cycle, :combination,
+  def_enums :each, :each_index, :cycle, :combination,
             :repeated_combination, :permutation, :repeated_permutation
 
   def_set_operator :&

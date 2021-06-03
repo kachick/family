@@ -15,15 +15,15 @@ class Family
 
     private
 
-    def def_enum(receiver, name)
+    def def_enum(name)
       define_method(name) do |*args, &block|
-        eval(receiver.to_s).__send__(name, *args, &block)
+        @values.__send__(name, *args, &block)
         self
       end
     end
 
-    def def_enums(receiver, *names)
-      names.each { |name| def_enum(receiver, name) }
+    def def_enums(*names)
+      names.each { |name| def_enum(name) }
     end
 
     def def_set_operator(operator)
