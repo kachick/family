@@ -41,10 +41,6 @@ class Family
 
   class MismatchedObject < TypeError; end
 
-  class DSL
-    include Eqq::Buildable
-  end
-
   attr_reader :pattern
 
   def initialize(pattern, values: [])
