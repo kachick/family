@@ -162,7 +162,7 @@ Declare.describe do
   end
 
   The Family.define{AND(String, /\d/)} do |list|
-    list << '8'
+    list << +'8'
     is ['8']
     truthy list.valid?
 
@@ -171,7 +171,7 @@ Declare.describe do
     end
 
     CATCH Family::MismatchedObject do
-      list << 'String'
+      list << +'String'
     end
 
     is ['8']
