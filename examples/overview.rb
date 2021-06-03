@@ -1,10 +1,11 @@
 # coding: us-ascii
+# frozen_string_literal: true
 
 $VERBOSE = true
 
 require_relative '../lib/family'
 
-list = Family.new Integer
+list = Family.new(Integer)
 list << 7 #=> 7
 #~ p list << 1.0 #=> Exception
 list << 1 #=> 1

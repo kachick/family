@@ -37,7 +37,7 @@ list.inspect   #=> "Integer ===: [7, 1]
 ### Not bound by "Type"
 
 ```ruby
-list = Family.new /\A\S+\z/
+list = Family.new(/\A\S+\z/)
 list << 'a b c' #=> Exception
 list << 'abc'   #=> "abc"
 list.inspect    #=> "/\A\S+\z/ ===: ["abc"]"

@@ -1,4 +1,5 @@
 # coding: us-ascii
+# frozen_string_literal: true
 
 require_relative 'helper'
 
@@ -11,7 +12,7 @@ Declare.describe do
     truthy list.similar?([2, 9])
     falsy list.similar?([2, nil])
 
-    The (list << 7) do
+    The(list << 7) do
       EQUAL list
     end
 
@@ -64,11 +65,11 @@ Declare.describe do
       list << 'String'
     end
 
-    The (list & [7]) do
+    The(list & [7]) do
       is [7]
     end
 
-    The (list + [3]) do
+    The(list + [3]) do
       is [7, 1, 3]
     end
 
@@ -76,7 +77,7 @@ Declare.describe do
       list + [3.0]
     end
 
-    The (list | [3]) do
+    The(list | [3]) do
       is [7, 1, 3]
     end
 
@@ -84,11 +85,11 @@ Declare.describe do
       list | [3.0]
     end
 
-    The (list - [1]) do
+    The(list - [1]) do
       is [7]
     end
 
-    The (list - [1.0]) do
+    The(list - [1.0]) do
       is [7, 1]
     end
 

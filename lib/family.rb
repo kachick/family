@@ -1,4 +1,6 @@
 # coding: us-ascii
+# frozen_string_literal: true
+
 # Copyright (C) 2012 Kenichi Kamiya
 
 # Family is a Container class.
@@ -52,13 +54,13 @@ class Family
   end
 
   def_delegators :@values, :join, :<=>, :==, :[], :at, :assoc,
-    :rassoc, :delete, :delete_at, :empty?, :fetch, :first, :last, :take, :tail,
-    :flatten, :include?, :index, :to_s, :length, :size, :pack,
-    :pop, :product, :reverse_each, :rindex, :sample,
-    :slice, :slice!, :transpose, :zip, :to_h, :bsearch
+                 :rassoc, :delete, :delete_at, :empty?, :fetch, :first, :last, :take, :tail,
+                 :flatten, :include?, :index, :to_s, :length, :size, :pack,
+                 :pop, :product, :reverse_each, :rindex, :sample,
+                 :slice, :slice!, :transpose, :zip, :to_h, :bsearch
 
   def_enums :@values, :each, :each_index, :cycle, :combination,
-    :repeated_combination, :permutation, :repeated_permutation
+            :repeated_combination, :permutation, :repeated_permutation
 
   def_set_operator :&
   def_set_operator :+
@@ -80,7 +82,7 @@ class Family
 
   # @return [self]
   def <<(value)
-    raise MismatchedObject unless family? value
+    raise MismatchedObject unless family?(value)
 
     @values << value
     self
@@ -90,18 +92,18 @@ class Family
 
   # @return [self]
   def unshift(value)
-    raise MismatchedObject unless family? value
+    raise MismatchedObject unless family?(value)
 
-    @values.unshift value
+    @values.unshift(value)
     self
   end
 
   # @param [#all?] list
   # @return [self]
   def concat(list)
-    raise MismatchedObject unless similar? list
+    raise MismatchedObject unless similar?(list)
 
-    @values.concat list
+    @values.concat(list)
     self
   end
 
@@ -111,28 +113,28 @@ class Family
 
   # @param [#all?] list
   def similar?(list)
-    list.all?{|v|family? v}
+    list.all? { |v| family?(v) }
   end
 
   def valid?
-    similar? @values
+    similar?(@values)
   end
 
   # @return [Family]
   def map(&block)
-    return to_enum(__callee__){size} unless block_given?
+    return to_enum(__callee__) { size } unless block
 
-    self.class.__new__ @pattern, @values.map(&block)
+    self.class.__new__(@pattern, @values.map(&block))
   end
 
   alias_method :collect, :map
 
   # @return [self]
   def map!(&block)
-    return to_enum(__callee__){size} unless block_given?
+    return to_enum(__callee__) { size } unless block
 
     mapped = @values.map(&block)
-    raise InvalidOperation unless similar? mapped
+    raise InvalidOperation unless similar?(mapped)
 
     @values = mapped
     self
@@ -144,9 +146,9 @@ class Family
   def *(times_or_delimiter)
     case times_or_delimiter
     when Integer
-      self.class.__new__ @pattern, @values * times_or_delimiter
+      self.class.__new__(@pattern, @values * times_or_delimiter)
     when String
-      join times_or_delimiter
+      join(times_or_delimiter)
     else
       raise ArgumentError
     end
@@ -165,10 +167,10 @@ class Family
 
   # @param [Symbol] name
   def method_missing(name, *args, &block)
-    return super unless @values.respond_to? name
+    return super unless @values.respond_to?(name)
 
-    warn "WARN:#{__FILE__}:#{__LINE__}:unexpected method, not checked any patterns"
-    @values.__send__ name, *args, &block
+    warn("WARN:#{__FILE__}:#{__LINE__}:unexpected method, not checked any patterns")
+    @values.__send__(name, *args, &block)
   end
 
   # @return [self]
@@ -179,7 +181,7 @@ class Family
 
   # @return [Family]
   def compact
-    self.class.__new__ @pattern, @values.compact
+    self.class.__new__(@pattern, @values.compact)
   end
 
   # @return [self, nil]
@@ -199,14 +201,14 @@ class Family
 
   # @return [self, nil]
   def reject!(&block)
-    return to_enum(__callee__) unless block_given?
+    return to_enum(__callee__) unless block
 
     @values.reject!(&block) && self
   end
 
   # @return [self]
   def delete_if(&block)
-    return to_enum(__callee__) unless block_given?
+    return to_enum(__callee__) unless block
 
     reject!(&block)
     self
@@ -214,14 +216,14 @@ class Family
 
   # @return [self, nil]
   def select!(&block)
-    return to_enum(__callee__) unless block_given?
+    return to_enum(__callee__) unless block
 
     @values.select!(&block) && self
   end
   alias_method :filter!, :select!
 
   def keep_if(&block)
-    return to_enum(__callee__) unless block_given?
+    return to_enum(__callee__) unless block
 
     select!(&block)
     self
@@ -230,7 +232,7 @@ class Family
   # @return [self]
   def fill(*args, &block)
     filled = @values.dup.fill(*args, &block)
-    raise MismatchedObject unless similar? filled
+    raise MismatchedObject unless similar?(filled)
 
     @values = filled
     self
@@ -239,7 +241,7 @@ class Family
   # @param [#all?] list
   # @return [self]
   def replace(list)
-    raise MismatchedObject unless similar? list
+    raise MismatchedObject unless similar?(list)
 
     @values = list.dup
     self
@@ -247,7 +249,7 @@ class Family
 
   # @return [Family]
   def reverse
-    self.class.__new__ @pattern, @values.reverse
+    self.class.__new__(@pattern, @values.reverse)
   end
 
   # @return [self]
@@ -259,30 +261,30 @@ class Family
   # @param [Integer] pos
   # @return [Family]
   def rotate(pos=1)
-    self.class.__new__ @pattern, @values.rotate(pos)
+    self.class.__new__(@pattern, @values.rotate(pos))
   end
 
   # @param [Integer] pos
   # @return [self]
   def rotate!(pos=1)
-    @values.rotate! pos
+    @values.rotate!(pos)
     self
   end
 
   # @return [Family]
   def shuffle(options={})
-    self.class.__new__ @pattern, @values.shuffle(options)
+    self.class.__new__(@pattern, @values.shuffle(options))
   end
 
   # @return [self]
   def shuffle!(options={})
-    @values.shuffle! options
+    @values.shuffle!(options)
     self
   end
 
   # @return [Family]
   def sort(&block)
-    self.class.__new__ @pattern, @values.sort(&block)
+    self.class.__new__(@pattern, @values.sort(&block))
   end
 
   # @return [self, nil]
@@ -292,7 +294,7 @@ class Family
 
   # @return [Family]
   def sort_by(&block)
-    self.class.__new__ @pattern, @values.sort_by(&block)
+    self.class.__new__(@pattern, @values.sort_by(&block))
   end
 
   # @return [self, nil]
@@ -302,7 +304,7 @@ class Family
 
   # @return [Family]
   def uniq(&block)
-    self.class.__new__ @pattern, @values.uniq(&block)
+    self.class.__new__(@pattern, @values.uniq(&block))
   end
 
   # @return [self, nil]
@@ -313,7 +315,7 @@ class Family
   # @param [Integer, Range<Integer>] selectors
   # @return [Family]
   def values_at(*selectors)
-    self.class.__new__ @pattern, @values.values_at(*selectors)
+    self.class.__new__(@pattern, @values.values_at(*selectors))
   end
 
   protected
@@ -331,5 +333,4 @@ class Family
   def initialize_copy(original)
     @values = @values.dup
   end
-
 end
