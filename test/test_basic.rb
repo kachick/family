@@ -93,7 +93,7 @@ Declare.describe do
       is [7, 1]
     end
 
-    The list.sort.bsearch{|x| x > 4} do
+    The(list.sort.bsearch{|x| x > 4}) do
       is 7
     end
 
@@ -128,7 +128,7 @@ Declare.describe do
     end
   end
 
-  The Family.define{OR(Integer, nil)} do |list|
+  The(Family.define{OR(Integer, nil)}) do |list|
     list << nil << 1 << nil << 3 << 4 << nil << nil << 7 << nil
 
     CATCH Family::MismatchedObject do
@@ -143,7 +143,7 @@ Declare.describe do
     end
   end
 
-  The Family.define{AND(Array, ->ary{ary.size == 2 })} do |list|
+  The(Family.define{AND(Array, ->ary{ary.size == 2 })}) do |list|
     list << [1, 2]
 
     The list.inspect do
@@ -161,7 +161,7 @@ Declare.describe do
     end
   end
 
-  The Family.define{AND(String, /\d/)} do |list|
+  The(Family.define{AND(String, /\d/)}) do |list|
     list << +'8'
     is ['8']
     truthy list.valid?

@@ -272,13 +272,13 @@ class Family
   end
 
   # @return [Family]
-  def shuffle(options={})
-    self.class.__new__(@pattern, @values.shuffle(options))
+  def shuffle(...)
+    self.class.__new__(@pattern, @values.shuffle(...))
   end
 
   # @return [self]
-  def shuffle!(options={})
-    @values.shuffle!(options)
+  def shuffle!(...)
+    @values.shuffle!(...)
     self
   end
 
