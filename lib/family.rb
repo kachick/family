@@ -6,7 +6,7 @@
 # But the condition is not bound by "types" ... :)
 
 require 'forwardable'
-require 'validation'
+require 'eqq'
 require_relative 'family/version'
 require_relative 'family/singleton_class'
 
@@ -34,24 +34,19 @@ require_relative 'family/singleton_class'
 # @note removed from Array
 #   * #flatten! is none
 class Family
-
   extend Forwardable
   include Enumerable
-  include Validation
 
   class MismatchedObject < TypeError; end
 
   class DSL
-
-    include Validation
-    include Validation::Condition
-
+    include Eqq::Buildable
   end
 
-  attr_reader :proof, :comparison
+  attr_reader :pattern
 
-  def initialize(proof, comparison: :===, values: [])
-    @proof, @comparison, @values = proof, comparison, values.to_ary
+  def initialize(pattern, values: [])
+    @pattern, @values = pattern, values.to_ary
 
     raise MismatchedObject unless valid?
   end
@@ -80,8 +75,7 @@ class Family
 
   # @return [String]
   def inspect
-    condition = @proof.kind_of?(Proc) ? 'a Proc' : @proof.inspect
-    "#{condition} #{@comparison}: #{@values.inspect}"
+    "Family<#{@pattern.inspect}>: #{@values.inspect}"
   end
 
   # @return [self]
@@ -112,7 +106,7 @@ class Family
   end
 
   def family?(value)
-    @proof.__send__ @comparison, value
+    @pattern === value
   end
 
   # @param [#all?] list
@@ -128,7 +122,7 @@ class Family
   def map(&block)
     return to_enum(__callee__){size} unless block_given?
 
-    self.class.__new__ @proof, @comparison, @values.map(&block)
+    self.class.__new__ @pattern, @values.map(&block)
   end
 
   alias_method :collect, :map
@@ -150,7 +144,7 @@ class Family
   def *(times_or_delimiter)
     case times_or_delimiter
     when Integer
-      self.class.__new__ @proof, @comparison, @values * times_or_delimiter
+      self.class.__new__ @pattern, @values * times_or_delimiter
     when String
       join times_or_delimiter
     else
@@ -173,7 +167,7 @@ class Family
   def method_missing(name, *args, &block)
     return super unless @values.respond_to? name
 
-    warn "WARN:#{__FILE__}:#{__LINE__}:unexpected method, not cheked any proofs"
+    warn "WARN:#{__FILE__}:#{__LINE__}:unexpected method, not checked any patterns"
     @values.__send__ name, *args, &block
   end
 
@@ -185,7 +179,7 @@ class Family
 
   # @return [Family]
   def compact
-    self.class.__new__ @proof, @comparison, @values.compact
+    self.class.__new__ @pattern, @values.compact
   end
 
   # @return [self, nil]
@@ -253,7 +247,7 @@ class Family
 
   # @return [Family]
   def reverse
-    self.class.__new__ @proof, @comparison, @values.reverse
+    self.class.__new__ @pattern, @values.reverse
   end
 
   # @return [self]
@@ -265,7 +259,7 @@ class Family
   # @param [Integer] pos
   # @return [Family]
   def rotate(pos=1)
-    self.class.__new__ @proof, @comparison, @values.rotate(pos)
+    self.class.__new__ @pattern, @values.rotate(pos)
   end
 
   # @param [Integer] pos
@@ -277,7 +271,7 @@ class Family
 
   # @return [Family]
   def shuffle(options={})
-    self.class.__new__ @proof, @comparison, @values.shuffle(options)
+    self.class.__new__ @pattern, @values.shuffle(options)
   end
 
   # @return [self]
@@ -288,7 +282,7 @@ class Family
 
   # @return [Family]
   def sort(&block)
-    self.class.__new__ @proof, @comparison, @values.sort(&block)
+    self.class.__new__ @pattern, @values.sort(&block)
   end
 
   # @return [self, nil]
@@ -298,7 +292,7 @@ class Family
 
   # @return [Family]
   def sort_by(&block)
-    self.class.__new__ @proof, @comparison, @values.sort_by(&block)
+    self.class.__new__ @pattern, @values.sort_by(&block)
   end
 
   # @return [self, nil]
@@ -308,7 +302,7 @@ class Family
 
   # @return [Family]
   def uniq(&block)
-    self.class.__new__ @proof, @comparison, @values.uniq(&block)
+    self.class.__new__ @pattern, @values.uniq(&block)
   end
 
   # @return [self, nil]
@@ -319,7 +313,7 @@ class Family
   # @param [Integer, Range<Integer>] selectors
   # @return [Family]
   def values_at(*selectors)
-    self.class.__new__ @proof, @comparison, @values.values_at(*selectors)
+    self.class.__new__ @pattern, @values.values_at(*selectors)
   end
 
   protected
@@ -329,7 +323,7 @@ class Family
   end
 
   def _comparison_values
-    [@proof, @comparison, @values]
+    [@pattern, @values]
   end
 
   private
