@@ -54,5 +54,5 @@ The pattern builder DSL is just using [eqq](https://github.com/kachick/eqq)
 
 ## Links
 
-* [Repository](https://github.com/kachick/my_new_library)
-* [API documents](https://kachick.github.io/my_new_library/)
+* [Repository](https://github.com/kachick/family)
+* [API documents](https://kachick.github.io/family/)
