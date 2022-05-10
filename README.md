@@ -12,7 +12,7 @@ Require Ruby 2.7 or later
 Add below code into your Gemfile
 
 ```ruby
-gem 'family', '0.0.7'
+gem 'family', '~> 0.1.0'
 ```
 
 ### Overview
