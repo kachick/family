@@ -21,6 +21,6 @@ group :development do
 end
 
 group :test do
-  gem 'declare', '~> 0.3.1'
+  gem 'declare', '~> 0.4.0'
   gem 'warning', '~> 1.2.1'
 end
