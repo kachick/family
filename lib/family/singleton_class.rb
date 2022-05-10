@@ -5,7 +5,7 @@ class Family
   class << self
     # @return [Family]
     def define(values: [], &block)
-      __new__(Eqq.define(&block), values)
+      __new__(Eqq.build(&block), values)
     end
 
     # @private
