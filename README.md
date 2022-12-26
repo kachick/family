@@ -1,7 +1,7 @@
 # family
 
 ![Build Status](https://github.com/kachick/family/actions/workflows/test_behaviors.yml/badge.svg?branch=main)
-[![Gem Version](https://badge.fury.io/rb/family.png)](http://badge.fury.io/rb/family)
+[![Gem Version](https://badge.fury.io/rb/family.svg)](http://badge.fury.io/rb/family)
 
 Like a Typed Array, but it is more flexible than `Type`
 
