@@ -1,19 +1,16 @@
+- _**This repository is archived**_
+- _**No longer maintained**_
+- _**All versions have been yanked from https://rubygems.org for releasing valuable namespace for others**_
+
 # family
 
 ![Build Status](https://github.com/kachick/family/actions/workflows/test_behaviors.yml/badge.svg?branch=main)
-[![Gem Version](https://badge.fury.io/rb/family.svg)](http://badge.fury.io/rb/family)
 
 Like a Typed Array, but it is more flexible than `Type`
 
 ## Usage
 
 Require Ruby 2.7 or later
-
-Add below code into your Gemfile
-
-```ruby
-gem 'family', '~> 0.1.0'
-```
 
 ### Overview
 
